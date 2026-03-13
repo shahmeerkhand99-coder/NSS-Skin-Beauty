@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Import Products - NS Beauty</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .btn { background: #e91e8c; color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; }
+        .btn:hover { background: #c0176f; }
+        .result { margin-top: 20px; padding: 15px; border-radius: 8px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+    <h1>Import Sample Products</h1>
+    <p>Click the button below to import sample products into the database. This will fix the wishlist and product display issues.</p>
+    
+    <button class="btn" onclick="importProducts()">Import Products Now</button>
+    
+    <div id="result"></div>
+
+    <script>
+        async function importProducts() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="result">Importing products...</div>';
+            
+            try {
+                const response = await fetch('import_products.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'action=import'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `<div class="result success">✅ ${data.message}</div>`;
+                    setTimeout(() => {
+                        window.location.href = 'index.php';
+                    }, 2000);
+                } else {
+                    resultDiv.innerHTML = `<div class="result error">❌ ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result error">❌ Error: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
